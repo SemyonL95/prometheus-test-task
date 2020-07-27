@@ -4,15 +4,15 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
 func main() {
+
 	go func() {
 		metricsMux := http.NewServeMux()
-		metricsMux.HandleFunc("/metrtics", func(w http.ResponseWriter, r *http.Request) {
-			fmt.Println("Test")
-			return
-		})
+		metricsMux.HandleFunc("/metrtics", promhttp.Handler().ServeHTTP)
 		metricsServer := http.Server{
 			Addr:    ":5000",
 			Handler: metricsMux,
