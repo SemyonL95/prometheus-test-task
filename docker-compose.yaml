@@ -1,0 +1,14 @@
+version: "3.2"
+services:
+
+    app:
+        build: ./
+        ports: 
+            - "${METRICS_PORT}:${METRICS_PORT}"
+            - "${LOGS_PORT}:${LOGS_PORT}"
+        volumes: 
+            - ./storage:/storage
+            - /tmp:/tmp
+        environment: 
+            LOGS_PORT: ${LOGS_PORT}
+            METRICS_PORT: ${METRICS_PORT}

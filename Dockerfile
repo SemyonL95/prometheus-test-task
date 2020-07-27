@@ -34,4 +34,4 @@ COPY --from=builder /app/main /
 # Command to run
 ENTRYPOINT ["/main"]
 
-EXPOSE 5000 9102
+EXPOSE ${METRICS_PORT} ${LOGS_PORT}

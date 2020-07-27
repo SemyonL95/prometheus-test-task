@@ -12,6 +12,7 @@ type InMemoryCache struct {
 
 func New() *InMemoryCache {
 	return &InMemoryCache{
+		mu:   &sync.Mutex{},
 		data: make(map[string]struct{}),
 	}
 }

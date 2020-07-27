@@ -110,6 +110,6 @@ func (api *API) HandleMetrics(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	promhttp.Handler()
+	promhttp.Handler().ServeHTTP(w, r)
 	return
 }

@@ -4,17 +4,29 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-
-	"github.com/prometheus/client_golang/prometheus/promhttp"
+	"prometheus-test-task/internals/api"
+	"prometheus-test-task/internals/cache"
+	"prometheus-test-task/internals/config"
+	"prometheus-test-task/internals/metrics"
 )
 
 func main() {
 
+	conf := config.New()
+
+	log.Printf("config: %+v", conf)
+
+	cache := cache.New()
+	metrics := metrics.New()
+	handlers := api.New(cache, metrics)
+
 	go func() {
+		log.Print("Starting metrics server")
+
 		metricsMux := http.NewServeMux()
-		metricsMux.HandleFunc("/metrtics", promhttp.Handler().ServeHTTP)
+		metricsMux.HandleFunc("/metrics", handlers.HandleMetrics)
 		metricsServer := http.Server{
-			Addr:    ":5000",
+			Addr:    fmt.Sprintf(":%d", conf.MetricsPort),
 			Handler: metricsMux,
 		}
 		err := metricsServer.ListenAndServe()
@@ -23,13 +35,11 @@ func main() {
 		}
 	}()
 
+	log.Print("Starting logs server")
 	apiMux := http.NewServeMux()
-	apiMux.HandleFunc("/logs", func(w http.ResponseWriter, r *http.Request) {
-		fmt.Println("logs")
-		return
-	})
+	apiMux.HandleFunc("/logs", handlers.HandleLogs)
 	apiServer := http.Server{
-		Addr:    ":9102",
+		Addr:    fmt.Sprintf(":%d", conf.LogsPort),
 		Handler: apiMux,
 	}
 	err := apiServer.ListenAndServe()
