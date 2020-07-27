@@ -7,7 +7,7 @@ import (
 
 type InMemoryCache struct {
 	mu   *sync.Mutex
-	data map[string]struct{}
+	data map[string]struct{} // map with empty struct for less memory usage, because empty struct don't use memory
 }
 
 func New() *InMemoryCache {
@@ -23,7 +23,7 @@ func (imc *InMemoryCache) Set(val string) error {
 
 	_, exists := imc.data[val]
 	if exists {
-		return api.ErrValExists{
+		return api.ErrValExists{ // if exists value we returnin custom error
 			Msg: val,
 		}
 	}

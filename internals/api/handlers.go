@@ -69,7 +69,7 @@ func (api *API) HandleLogs(w http.ResponseWriter, r *http.Request) {
 
 	err = api.Cache.Set(lr.IP)
 	if err != nil {
-		if _, ok := err.(ErrValExists); ok {
+		if _, ok := err.(ErrValExists); ok { // here we check for custom value if record exists
 			errMsg := "Ip adress already exists"
 
 			log.Print(errMsg)

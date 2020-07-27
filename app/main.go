@@ -36,6 +36,7 @@ func main() {
 	}()
 
 	log.Print("Starting logs server")
+
 	apiMux := http.NewServeMux()
 	apiMux.HandleFunc("/logs", handlers.HandleLogs)
 	apiServer := http.Server{
